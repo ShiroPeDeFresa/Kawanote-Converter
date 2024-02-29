@@ -20,7 +20,7 @@ def handle_selection(file, destination):
         hit_objects = read_file.getHitObjects(osu_file)
 
         midi_file = MIDIFile(numTracks=1,
-                            removeDuplicates=False,
+                            removeDuplicates=True,
                             deinterleave=True,
                             adjust_origin=False,
                             file_format=1,
@@ -63,4 +63,4 @@ window.selection_completed.connect(handle_selection)  # Conexión a la señal
 
 window.show()
 
-sys.exit(app.exec_())
+sys.exit(app.exec())

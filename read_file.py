@@ -61,7 +61,7 @@ def getHitObjects(file_path):
         position = int(items[2])
         note_type = int(items[5].split(':', 1)[0]) # <- 0 si es rice, >1 si es LN
 
-        length = (40 if note_type == 0 else note_type - position)  # <- Esta línea hace ese split porque quiere coger solo el primer parametro de la seccion
+        length = (0.05 if note_type == 0 else note_type - position)  # <- Esta línea hace ese split porque quiere coger solo el primer parametro de la seccion
                                                                                                     # ultima de la linea con formato "32785:0:0:0:0:"
         hit_object_list.append(hit_object.HitObject(column, position, length))
   

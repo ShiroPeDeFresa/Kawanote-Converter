@@ -1,3 +1,5 @@
+import read_file 
+
 class HitObject():
 
    
@@ -19,11 +21,4 @@ class HitObject():
         return self._length
 
     def traducir_column(column):
-        if column == 64:
-            return 63
-        if column == 192 :
-            return 62 
-        if column == 320 :
-            return 61
-        if column == 448 :
-            return 60
+        return 63-(int(column)//(512//int(read_file.KEYMODE)))

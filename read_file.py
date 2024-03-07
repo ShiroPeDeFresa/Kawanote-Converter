@@ -1,7 +1,11 @@
 from midiutil.MidiFile import MIDIFile
 import hit_object
 
+OFFSET_TO_FIX = 0
+KEYMODE = ''
+
 def getHeaders(file_path):
+    global KEYMODE
     headers = {}
     beatmap = open(file_path, "r", encoding='utf-8')
 
@@ -18,6 +22,7 @@ def getHeaders(file_path):
     while "CircleSize:" not in line:
         line = beatmap.readline()
         headers['keymode'] = line[11:-1]
+        KEYMODE = line[11:-1]
         
     beatmap.close()
     return headers
@@ -41,6 +46,9 @@ def getTimingPoints(file_path):
         
         line = beatmap.readline()
 
+    if int(tp_list[0].split(',')[0]) < 0:
+        fix_negative_offset(tp_list)
+
     beatmap.close()
     return tp_list
 
@@ -58,7 +66,7 @@ def getHitObjects(file_path):
         items = line.split(',') 
         
         column = int(items[0])
-        position = int(items[2])
+        position = int(items[2]) if OFFSET_TO_FIX == 0 else int(items[2]) + OFFSET_TO_FIX
         note_type = int(items[5].split(':', 1)[0]) # <- 0 si es rice, >1 si es LN
 
         length = (0.05 if note_type == 0 else note_type - position)  # <- Esta línea hace ese split porque quiere coger solo el primer parametro de la seccion
@@ -69,6 +77,18 @@ def getHitObjects(file_path):
 
     beatmap.close()
     return hit_object_list
+
+#Funcion que arregla los offset negativos
+def fix_negative_offset(tp_list):
+    global OFFSET_TO_FIX
+
+    OFFSET_TO_FIX = int(tp_list[0].split(',')[0]) * -1
+
+    for i in range(len(tp_list)):
+        items = tp_list[i].split(',')
+        items[0] = str(int(items[0]) + OFFSET_TO_FIX)
+        tp_list[i] = ','.join(items)
+
 
 
 if __name__ == '__main__':
